@@ -10,17 +10,16 @@ const WhatsAppButton = () => {
   };
 
   return (
-    <Button
+    <div
       onClick={handleWhatsAppClick}
-      className="fixed bottom-6 right-6 z-50 h-16 w-16 rounded-full bg-gradient-accent shadow-glow hover:shadow-lg hover:scale-110 transition-all duration-300 group"
-      size="icon"
+      className="fixed bottom-6 right-6 z-50 cursor-pointer hover:scale-110 transition-all duration-300 group"
     >
       <img 
         src={whatsappLogo} 
         alt="WhatsApp" 
-        className="h-8 w-8 group-hover:scale-110 transition-transform duration-300" 
+        className="h-16 w-16 drop-shadow-lg group-hover:drop-shadow-xl transition-all duration-300" 
       />
-    </Button>
+    </div>
   );
 };
 
