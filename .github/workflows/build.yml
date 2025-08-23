@@ -1,0 +1,42 @@
+name: Build Vite app
+
+on:
+  workflow_dispatch: {}        # Permite lanzarlo manualmente
+  push:
+    branches: [ main ]         # Opcional: ejecuta al hacer push a main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'   # O '18' si prefieres LTS anterior
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        # Si tu repo no tiene package-lock.json, usa:
+        # run: npm install
+
+      - name: Build
+        run: npm run build
+
+      # Opcional: incluir .htaccess en el build si usas rutas de SPA
+      # - name: Copy .htaccess into dist
+      #   run: |
+      #     if [ -f public/.htaccess ]; then
+      #       cp public/.htaccess dist/.htaccess
+      #     fi
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          if-no-files-found: error
