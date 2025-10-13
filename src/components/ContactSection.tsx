@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const ContactSection = () => {
   const handleWhatsAppClick = () => {
-    const phoneNumber = "+34912373521";
+    const phoneNumber = "+34648492221";
     const message = encodeURIComponent("Hola! Me gustaría reservar una cita en Chamberi Barber Shop");
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
@@ -64,7 +64,7 @@ const ContactSection = () => {
                   <Phone className="h-6 w-6 text-electric-blue mt-1 flex-shrink-0" />
                   <div>
                     <h3 className="text-xl font-semibold text-white mb-2">Teléfono</h3>
-                    <p className="text-gray-300">+34 912 373 521</p>
+                    <p className="text-gray-300">+34 648 492 221</p>
                   </div>
                 </div>
                 

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
 
 const WhatsAppButton = () => {
-  const phoneNumber = "+34912373521";
+  const phoneNumber = "+34648492221";
   const message = encodeURIComponent("Hola! Me gustaría reservar una cita en Chamberi Barber Shop");
   
   const handleWhatsAppClick = () => {
