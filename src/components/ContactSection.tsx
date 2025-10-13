@@ -55,7 +55,7 @@ const ContactSection = () => {
                     <h3 className="text-xl font-semibold text-white mb-2">Dirección</h3>
                     <p className="text-gray-300 leading-relaxed">
                       C/ de Donoso Cortés, 90<br />
-                      Chamberí, 28015 Madrid
+                      28015 Chamberí, Madrid
                     </p>
                   </div>
                 </div>
