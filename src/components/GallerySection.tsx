@@ -46,18 +46,6 @@ const galleryImages = [
     alt: "Interior de Chamberi Barber Shop - Techo con LED hexagonal",
     title: "Techo LED",
     description: "Diseño arquitectónico único"
-  },
-  {
-    src: "/lovable-uploads/e1a9d21d-6614-4088-b7b3-08e6ef3f2358.png",
-    alt: "Interior de Chamberi Barber Shop - Área principal",
-    title: "Área Principal",
-    description: "Ambiente relajado y profesional"
-  },
-  {
-    src: "/lovable-uploads/2ea73f30-6511-4aab-9969-79731b7565da.png",
-    alt: "Interior de Chamberi Barber Shop - Zona de trabajo",
-    title: "Zona de Trabajo",
-    description: "Equipamiento de última generación"
   }
 ];
 
