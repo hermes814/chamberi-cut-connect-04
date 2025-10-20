@@ -1,6 +1,7 @@
 import { MapPin, Phone, Clock, Instagram } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import qrCode from "@/assets/chamberi-qr-code.png";
 
 const ContactSection = () => {
   const handleWhatsAppClick = () => {
@@ -117,6 +118,29 @@ const ContactSection = () => {
                   <Instagram className="h-5 w-5 mr-2" />
                   @chamberibarbershop_
                 </Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-background border-border shadow-card">
+              <CardContent className="p-8 text-center">
+                <h3 className="text-2xl font-semibold text-white mb-4">
+                  Encuéntranos en Google
+                </h3>
+                <p className="text-gray-300 mb-6">
+                  Escanea el código QR para ver nuestras reseñas
+                </p>
+                <a 
+                  href="https://www.google.com/search?q=chamberi+barbershop&sca_esv=825d6cf8198b9510&sxsrf=AE3TifOIMqzdlcHiHNQvVmlUEP2rkyGY_Q%3A1760955780120&source=hp&ei=hA32aPatBbqhkdUPpY2_mA4&iflsig=AOw8s4IAAAAAaPYblJHY5c00qIp-Q5tHHpECp01VJH1p&oq=chamberi+barber&gs_lp=Egdnd3Mtd2l6GgIYAyIPY2hhbWJlcmkgYmFyYmVyKgIIADIFEAAYgAQyBhAAGBYYHjIGEAAYFhgeMgkQABgWGIsDGB4yCRAAGBYYiwMYHjILEAAYFhgKGIsDGB4yCRAAGBYYiwMYHjIJEAAYFhiLAxgeMgkQABgWGIsDGB4yCRAAGBYYiwMYHki9MlAAWMomcAB4AJABAJgBiwGgAdQLqgEEMTAuNbgBA8gBAPgBAZgCD6ACkAzCAgQQIxgnwgIIEAAYgAQYsQPCAhEQLhiABBixAxjRAxiDARjHAcICCxAAGIAEGLEDGIMBwgILEC4YgAQYsQMYgwHCAg4QABiABBixAxiDARiKBcICCBAuGIAEGLEDwgIOEAAYgAQYsQMYgwEYyQPCAgsQABiABBiSAxiKBcICDhAuGIAEGKgDGIsDGJ0DwgIIEAAYgAQYiwPCAg4QLhiABBjHARiOBRivAcICBRAuGIAEwgIREC4YgAQYsQMYxwEYjgUYrwHCAhcQLhiABBixAxjRAxjSAxjHARioAxiLA8ICFxAuGIAEGKYDGMcBGKgDGIsDGI4FGK8BwgIREC4YgAQYsQMYqAMYmgMYiwPCAgsQABiABBixAxiLA8ICFBAuGIAEGLEDGKIFGKgDGIsDGJ0DwgIaEC4YgAQYpgMYxwEY-AUYqAMYiwMYjgUYrwGYAwCSBwM3LjigB9LKAbIHAzcuOLgHkAzCBwYwLjEzLjLIByo&sclient=gws-wiz#vhid=/g/11wtymk31y&vssid=lcl&irp="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <img 
+                    src={qrCode} 
+                    alt="Código QR para Google Reviews de Chamberi Barber Shop" 
+                    className="w-48 h-48 mx-auto rounded-lg shadow-lg hover:scale-105 transition-transform duration-300"
+                  />
+                </a>
               </CardContent>
             </Card>
           </div>
