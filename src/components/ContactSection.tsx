@@ -124,7 +124,7 @@ const ContactSection = () => {
             <Card className="bg-background border-border shadow-card">
               <CardContent className="p-8 text-center">
                 <h3 className="text-2xl font-semibold text-white mb-4">
-                  Encuéntranos en Google
+                  Déjanos tu comentario y calificación
                 </h3>
                 <p className="text-gray-300 mb-6">
                   Escanea el código QR para ver nuestras reseñas
