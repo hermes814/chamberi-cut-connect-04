@@ -13,6 +13,7 @@ const PricingSection = () => {
     { name: "CORTE + CEJAS", price: "15 EUR" },
     { name: "CORTE + BARBA", price: "18 EUR" },
     { name: "CORTE", price: "12 EUR" },
+    { name: "CORTE PARA NIÑOS", price: "9 EUR" },
   ];
 
   const extraServices = [
