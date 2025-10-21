@@ -9,16 +9,16 @@ import {
 
 const PricingSection = () => {
   const mainServices = [
-    { name: "CORTE + BARBA + CEJAS", price: "20 EUR" },
-    { name: "CORTE + CEJAS", price: "15 EUR" },
-    { name: "CORTE + BARBA", price: "18 EUR" },
-    { name: "CORTE", price: "12 EUR" },
-    { name: "CORTE PARA NIÑOS", price: "9 EUR" },
+    { name: "CORTE + BARBA + CEJAS", price: "20 €" },
+    { name: "CORTE + CEJAS", price: "15 €" },
+    { name: "CORTE + BARBA", price: "18 €" },
+    { name: "CORTE", price: "12 €" },
+    { name: "CORTE PARA NIÑOS", price: "9 €" },
   ];
 
   const extraServices = [
-    { name: "BARBA", price: "9 EUR" },
-    { name: "CEJAS", price: "3 EUR" },
+    { name: "BARBA", price: "9 €" },
+    { name: "CEJAS", price: "3 €" },
   ];
 
   return (
