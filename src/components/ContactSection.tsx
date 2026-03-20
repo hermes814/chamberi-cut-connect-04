@@ -5,7 +5,7 @@ import qrCode from "@/assets/chamberi-qr-code.png";
 
 const ContactSection = () => {
   const handleWhatsAppClick = () => {
-    const phoneNumber = "+34648492221";
+    const phoneNumber = "+34603912086";
     const message = encodeURIComponent("Hola! Me gustaría reservar una cita en Chamberi Barber Shop");
     window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
