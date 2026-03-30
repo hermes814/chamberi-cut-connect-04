@@ -2,6 +2,7 @@ import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import PricingSection from "@/components/PricingSection";
 import GallerySection from "@/components/GallerySection";
+import ReservationsSection from "@/components/ReservationsSection";
 import ContactSection from "@/components/ContactSection";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
