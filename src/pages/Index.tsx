@@ -13,6 +13,7 @@ const Index = () => {
       <ServicesSection />
       <PricingSection />
       <GallerySection />
+      <ReservationsSection />
       <ContactSection />
       <WhatsAppButton />
     </div>
