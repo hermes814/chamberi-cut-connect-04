@@ -55,6 +55,9 @@ const ReservationsSection = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="font-bold text-foreground min-w-[130px]">
+                  FECHA
+                </TableHead>
                 {COLUMNS.map((col) => (
                   <TableHead key={col} className="font-bold text-foreground min-w-[150px]">
                     {col}
