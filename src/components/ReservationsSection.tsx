@@ -10,8 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 const ROWS = 30;
-const COLUMNS = ["FECHA", "NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
+const COLUMNS = ["NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
 const STORAGE_KEY = "reservations_locked";
+
+const getTodayDate = () => {
+  const d = new Date();
+  return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+};
 
 const ReservationsSection = () => {
   const [locked, setLocked] = useState<Record<string, string>>(() => {
