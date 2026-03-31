@@ -76,6 +76,7 @@ const ReservationsSection = () => {
                       {getTodayDate()}
                     </span>
                   </TableCell>
+                  {COLUMNS.map((col) => {
                     const key = `${i}-${col}`;
                     const isLocked = key in locked;
                     return (
