@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -6,9 +7,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+
+const ROWS = 30;
+const COLUMNS = ["FECHA", "NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
+const STORAGE_KEY = "reservations_locked";
 
 const ReservationsSection = () => {
-  const rows = Array.from({ length: 30 }, (_, i) => i + 1);
+  const [locked, setLocked] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(locked));
+  }, [locked]);
+
+  const handleBlur = (key: string) => {
+    const val = (drafts[key] || "").trim();
+    if (val) {
+      setLocked((prev) => ({ ...prev, [key]: val }));
+      setDrafts((prev) => {
+        const copy = { ...prev };
+        delete copy[key];
+        return copy;
+      });
+    }
+  };
 
   return (
     <section className="py-20 px-4 bg-background">
@@ -20,21 +50,42 @@ const ReservationsSection = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="font-bold text-foreground min-w-[120px]">FECHA</TableHead>
-                <TableHead className="font-bold text-foreground min-w-[180px]">NOMBRE DEL CLIENTE</TableHead>
-                <TableHead className="font-bold text-foreground min-w-[160px]">TIPO DE SERVICIO</TableHead>
-                <TableHead className="font-bold text-foreground min-w-[160px]">NÚMERO DE CONTACTO</TableHead>
-                <TableHead className="font-bold text-foreground min-w-[140px]">HORA DE RESERVA</TableHead>
+                {COLUMNS.map((col) => (
+                  <TableHead key={col} className="font-bold text-foreground min-w-[150px]">
+                    {col}
+                  </TableHead>
+                ))}
+                <TableHead className="font-bold text-foreground min-w-[140px]">
+                  HORA DE RESERVA
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row}>
-                  <TableCell className="text-foreground">&nbsp;</TableCell>
-                  <TableCell className="text-foreground">&nbsp;</TableCell>
-                  <TableCell className="text-foreground">&nbsp;</TableCell>
-                  <TableCell className="text-foreground">&nbsp;</TableCell>
-                  <TableCell className="text-foreground">&nbsp;</TableCell>
+              {Array.from({ length: ROWS }, (_, i) => (
+                <TableRow key={i}>
+                  {COLUMNS.map((col) => {
+                    const key = `${i}-${col}`;
+                    const isLocked = key in locked;
+                    return (
+                      <TableCell key={col} className="p-1">
+                        {isLocked ? (
+                          <span className="px-3 py-2 block text-foreground text-sm">
+                            {locked[key]}
+                          </span>
+                        ) : (
+                          <Input
+                            className="border-0 bg-transparent focus-visible:ring-1"
+                            value={drafts[key] || ""}
+                            onChange={(e) =>
+                              setDrafts((prev) => ({ ...prev, [key]: e.target.value }))
+                            }
+                            onBlur={() => handleBlur(key)}
+                          />
+                        )}
+                      </TableCell>
+                    );
+                  })}
+                  <TableCell className="p-1 text-muted-foreground text-center">—</TableCell>
                 </TableRow>
               ))}
             </TableBody>
