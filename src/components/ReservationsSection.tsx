@@ -11,12 +11,10 @@ import { Input } from "@/components/ui/input";
 
 const ROWS = 30;
 const COLUMNS = ["FECHA", "NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
-const STORAGE_KEY = "reservations_data";
-
-type CellData = Record<string, string>;
+const STORAGE_KEY = "reservations_locked";
 
 const ReservationsSection = () => {
-  const [data, setData] = useState<CellData>(() => {
+  const [locked, setLocked] = useState<Record<string, string>>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       return saved ? JSON.parse(saved) : {};
@@ -24,22 +22,21 @@ const ReservationsSection = () => {
       return {};
     }
   });
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }, [data]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(locked));
+  }, [locked]);
 
-  const handleChange = (row: number, col: string, value: string) => {
-    const key = `${row}-${col}`;
-    // Only allow writing if cell is empty (not yet saved)
-    if (data[key]) return;
-    setData((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleBlur = (row: number, col: string, value: string) => {
-    const key = `${row}-${col}`;
-    if (value.trim() && !data[key]) {
-      setData((prev) => ({ ...prev, [key]: value.trim() }));
+  const handleBlur = (key: string) => {
+    const val = (drafts[key] || "").trim();
+    if (val) {
+      setLocked((prev) => ({ ...prev, [key]: val }));
+      setDrafts((prev) => {
+        const copy = { ...prev };
+        delete copy[key];
+        return copy;
+      });
     }
   };
 
@@ -68,43 +65,23 @@ const ReservationsSection = () => {
                 <TableRow key={i}>
                   {COLUMNS.map((col) => {
                     const key = `${i}-${col}`;
-                    const locked = !!data[key];
+                    const isLocked = key in locked;
                     return (
                       <TableCell key={col} className="p-1">
-                        <Input
-                          className={`border-0 bg-transparent focus-visible:ring-1 ${locked ? "cursor-not-allowed opacity-80" : ""}`}
-                          value={data[key] || ""}
-                          readOnly={locked}
-                          onChange={(e) => {
-                            if (!locked) {
-                              const val = e.target.value;
-                              setData((prev) => ({ ...prev, [key]: "" }));
-                              // Store temporarily without locking
-                              setData((prev) => {
-                                const copy = { ...prev };
-                                delete copy[key];
-                                return { ...copy, [`_draft_${key}`]: val };
-                              });
+                        {isLocked ? (
+                          <span className="px-3 py-2 block text-foreground text-sm">
+                            {locked[key]}
+                          </span>
+                        ) : (
+                          <Input
+                            className="border-0 bg-transparent focus-visible:ring-1"
+                            value={drafts[key] || ""}
+                            onChange={(e) =>
+                              setDrafts((prev) => ({ ...prev, [key]: e.target.value }))
                             }
-                          }}
-                          onBlur={(e) => {
-                            const draftKey = `_draft_${key}`;
-                            const val = e.target.value.trim();
-                            if (val) {
-                              setData((prev) => {
-                                const copy = { ...prev };
-                                delete copy[draftKey];
-                                return { ...copy, [key]: val };
-                              });
-                            } else {
-                              setData((prev) => {
-                                const copy = { ...prev };
-                                delete copy[draftKey];
-                                return copy;
-                              });
-                            }
-                          }}
-                        />
+                            onBlur={() => handleBlur(key)}
+                          />
+                        )}
                       </TableCell>
                     );
                   })}
