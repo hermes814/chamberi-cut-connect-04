@@ -8,10 +8,31 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ROWS = 30;
 const COLUMNS = ["NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
 const STORAGE_KEY = "reservations_locked";
+const HOURS_KEY = "reservations_hours";
+
+const generateTimeSlots = () => {
+  const slots: string[] = [];
+  for (let h = 11; h <= 19; h++) {
+    for (let m = 0; m < 60; m += 20) {
+      slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+    }
+  }
+  slots.push("20:00");
+  return slots;
+};
+
+const ALL_SLOTS = generateTimeSlots();
 
 const getTodayDate = () => {
   const d = new Date();
@@ -28,10 +49,30 @@ const ReservationsSection = () => {
     }
   });
   const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [hours, setHours] = useState<Record<string, string>>(() => {
+    try {
+      const saved = localStorage.getItem(HOURS_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(locked));
   }, [locked]);
+
+  useEffect(() => {
+    localStorage.setItem(HOURS_KEY, JSON.stringify(hours));
+  }, [hours]);
+
+  const reservedSlots = useMemo(() => {
+    return new Set(Object.values(hours));
+  }, [hours]);
+
+  const availableSlots = useMemo(() => {
+    return ALL_SLOTS.filter((s) => !reservedSlots.has(s));
+  }, [reservedSlots]);
 
   const handleBlur = (key: string) => {
     const val = (drafts[key] || "").trim();
@@ -43,6 +84,10 @@ const ReservationsSection = () => {
         return copy;
       });
     }
+  };
+
+  const handleHourSelect = (rowIndex: number, value: string) => {
+    setHours((prev) => ({ ...prev, [rowIndex]: value }));
   };
 
   return (
@@ -63,7 +108,7 @@ const ReservationsSection = () => {
                     {col}
                   </TableHead>
                 ))}
-                <TableHead className="font-bold text-foreground min-w-[140px]">
+                <TableHead className="font-bold text-foreground min-w-[160px]">
                   HORA DE RESERVA
                 </TableHead>
               </TableRow>
@@ -98,7 +143,26 @@ const ReservationsSection = () => {
                       </TableCell>
                     );
                   })}
-                  <TableCell className="p-1 text-muted-foreground text-center">—</TableCell>
+                  <TableCell className="p-1">
+                    {hours[i] ? (
+                      <span className="px-3 py-2 block text-foreground text-sm font-medium">
+                        {hours[i]}
+                      </span>
+                    ) : (
+                      <Select onValueChange={(val) => handleHourSelect(i, val)}>
+                        <SelectTrigger className="border-0 bg-transparent">
+                          <SelectValue placeholder="Seleccionar" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableSlots.map((slot) => (
+                            <SelectItem key={slot} value={slot}>
+                              {slot}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
