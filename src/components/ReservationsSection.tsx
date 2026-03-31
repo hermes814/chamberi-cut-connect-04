@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Table,
   TableBody,
@@ -10,8 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 
 const ROWS = 30;
-const COLUMNS = ["FECHA", "NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
+const COLUMNS = ["NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
 const STORAGE_KEY = "reservations_locked";
+
+const getTodayDate = () => {
+  const d = new Date();
+  return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+};
 
 const ReservationsSection = () => {
   const [locked, setLocked] = useState<Record<string, string>>(() => {
@@ -50,6 +55,9 @@ const ReservationsSection = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="font-bold text-foreground min-w-[130px]">
+                  FECHA
+                </TableHead>
                 {COLUMNS.map((col) => (
                   <TableHead key={col} className="font-bold text-foreground min-w-[150px]">
                     {col}
@@ -63,6 +71,11 @@ const ReservationsSection = () => {
             <TableBody>
               {Array.from({ length: ROWS }, (_, i) => (
                 <TableRow key={i}>
+                  <TableCell className="p-1">
+                    <span className="px-3 py-2 block text-foreground text-sm">
+                      {getTodayDate()}
+                    </span>
+                  </TableCell>
                   {COLUMNS.map((col) => {
                     const key = `${i}-${col}`;
                     const isLocked = key in locked;
