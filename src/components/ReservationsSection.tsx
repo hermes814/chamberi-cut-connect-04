@@ -71,7 +71,11 @@ const ReservationsSection = () => {
             <TableBody>
               {Array.from({ length: ROWS }, (_, i) => (
                 <TableRow key={i}>
-                  {COLUMNS.map((col) => {
+                  <TableCell className="p-1">
+                    <span className="px-3 py-2 block text-foreground text-sm">
+                      {getTodayDate()}
+                    </span>
+                  </TableCell>
                     const key = `${i}-${col}`;
                     const isLocked = key in locked;
                     return (
