@@ -91,16 +91,9 @@ const ReservationsSection = () => {
   };
 
   const handleClearClientData = () => {
-    setLocked((prev) => {
-      const updated: Record<string, string> = {};
-      for (const [key, value] of Object.entries(prev)) {
-        const col = key.substring(key.indexOf("-") + 1);
-        if (col !== "NOMBRE DEL CLIENTE" && col !== "TIPO DE SERVICIO" && col !== "NÚMERO DE CONTACTO") {
-          updated[key] = value;
-        }
-      }
-      return updated;
-    });
+    setLocked({});
+    setDrafts({});
+    setHours({});
   };
 
   return (
