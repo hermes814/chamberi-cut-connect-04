@@ -189,6 +189,15 @@ const ReservationsSection = () => {
                       </Select>
                     )}
                   </TableCell>
+                  <TableCell className="p-1">
+                    <button
+                      onClick={() => handleAddCita(i)}
+                      disabled={!isRowComplete(i)}
+                      className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Añadir Cita
+                    </button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
