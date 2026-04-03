@@ -131,9 +131,12 @@ const ReservationsSection = () => {
                     {col}
                   </TableHead>
                 ))}
-                <TableHead className="font-bold text-foreground min-w-[160px]">
-                  HORA DE RESERVA
-                </TableHead>
+                 <TableHead className="font-bold text-foreground min-w-[160px]">
+                   HORA DE RESERVA
+                 </TableHead>
+                 <TableHead className="font-bold text-foreground min-w-[130px]">
+                   ACCIÓN
+                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
