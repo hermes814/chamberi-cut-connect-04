@@ -91,6 +91,14 @@ const ReservationsSection = () => {
     setHours((prev) => ({ ...prev, [rowIndex]: value }));
   };
 
+  const handleAddCita = (rowIndex: number) => {
+    window.open(SHEET_URL, "_blank");
+  };
+
+  const isRowComplete = (rowIndex: number) => {
+    return COLUMNS.every((col) => `${rowIndex}-${col}` in locked) && rowIndex in hours;
+  };
+
   const handleClearClientData = () => {
     setLocked({});
     setDrafts({});
