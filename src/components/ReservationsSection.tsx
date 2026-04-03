@@ -93,9 +93,30 @@ const ReservationsSection = () => {
     setHours((prev) => ({ ...prev, [rowIndex]: value }));
   };
 
-  const handleAddCita = (rowIndex: number) => {
-    window.open(SHEET_URL, "_blank");
-  };
+  const handleAddCita = useCallback(async (rowIndex: number) => {
+    const fecha = getTodayDate();
+    const nombre = locked[`${rowIndex}-NOMBRE DEL CLIENTE`] || "";
+    const servicio = locked[`${rowIndex}-TIPO DE SERVICIO`] || "";
+    const contacto = locked[`${rowIndex}-NÚMERO DE CONTACTO`] || "";
+    const hora = hours[rowIndex] || "";
+
+    if (!APPS_SCRIPT_URL) {
+      toast({ title: "Error", description: "URL del Apps Script no configurada.", variant: "destructive" });
+      return;
+    }
+
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fecha, nombre, servicio, contacto, hora }),
+      });
+      toast({ title: "Cita añadida", description: "Los datos se enviaron a la hoja de cálculo." });
+    } catch {
+      toast({ title: "Error", description: "No se pudo enviar la cita.", variant: "destructive" });
+    }
+  }, [locked, hours]);
 
   const isRowComplete = (rowIndex: number) => {
     return COLUMNS.every((col) => `${rowIndex}-${col}` in locked) && rowIndex in hours;
