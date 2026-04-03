@@ -23,7 +23,6 @@ const STORAGE_KEY = "reservations_locked";
 const HOURS_KEY = "reservations_hours";
 // IMPORTANTE: Reemplaza esta URL con la URL de tu Google Apps Script desplegado
 const APPS_SCRIPT_URL = "";
-const HOURS_KEY = "reservations_hours";
 
 const generateTimeSlots = () => {
   const slots: string[] = [];
