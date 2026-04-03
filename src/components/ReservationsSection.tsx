@@ -19,6 +19,7 @@ import {
 const ROWS = 30;
 const COLUMNS = ["NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
 const STORAGE_KEY = "reservations_locked";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1wK5DDEBbMMiSA958NzYYPJ2sXMGpm6vq7fGQFCf7KU0/edit?gid=0#gid=0";
 const HOURS_KEY = "reservations_hours";
 
 const generateTimeSlots = () => {
@@ -90,6 +91,14 @@ const ReservationsSection = () => {
     setHours((prev) => ({ ...prev, [rowIndex]: value }));
   };
 
+  const handleAddCita = (rowIndex: number) => {
+    window.open(SHEET_URL, "_blank");
+  };
+
+  const isRowComplete = (rowIndex: number) => {
+    return COLUMNS.every((col) => `${rowIndex}-${col}` in locked) && rowIndex in hours;
+  };
+
   const handleClearClientData = () => {
     setLocked({});
     setDrafts({});
@@ -122,9 +131,12 @@ const ReservationsSection = () => {
                     {col}
                   </TableHead>
                 ))}
-                <TableHead className="font-bold text-foreground min-w-[160px]">
-                  HORA DE RESERVA
-                </TableHead>
+                 <TableHead className="font-bold text-foreground min-w-[160px]">
+                   HORA DE RESERVA
+                 </TableHead>
+                 <TableHead className="font-bold text-foreground min-w-[130px]">
+                   ACCIÓN
+                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -176,6 +188,15 @@ const ReservationsSection = () => {
                         </SelectContent>
                       </Select>
                     )}
+                  </TableCell>
+                  <TableCell className="p-1">
+                    <button
+                      onClick={() => handleAddCita(i)}
+                      disabled={!isRowComplete(i)}
+                      className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Añadir Cita
+                    </button>
                   </TableCell>
                 </TableRow>
               ))}
