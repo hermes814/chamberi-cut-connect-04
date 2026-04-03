@@ -20,7 +20,9 @@ import {
 const ROWS = 30;
 const COLUMNS = ["NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
 const STORAGE_KEY = "reservations_locked";
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/1wK5DDEBbMMiSA958NzYYPJ2sXMGpm6vq7fGQFCf7KU0/edit?gid=0#gid=0";
+const HOURS_KEY = "reservations_hours";
+// IMPORTANTE: Reemplaza esta URL con la URL de tu Google Apps Script desplegado
+const APPS_SCRIPT_URL = "";
 const HOURS_KEY = "reservations_hours";
 
 const generateTimeSlots = () => {
