@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Scissors, UserCheck, Sparkles, Users } from "lucide-react";
-import servicesBg from "@/assets/services-bg.jpg";
+import servicesBg from "@/assets/services-bg-photo.jpg.asset.json";
 
 
 const services = [
