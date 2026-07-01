@@ -27,7 +27,7 @@ const APPS_SCRIPT_URL = "";
 const generateTimeSlots = () => {
   const slots: string[] = [];
   for (let h = 10; h <= 20; h++) {
-    for (let m = 0; m < 60; m += 20) {
+    for (let m = 0; m < 60; m += 35) {
       const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
       // Stop once we pass 20:30
       if (h === 20 && m > 30) break;
