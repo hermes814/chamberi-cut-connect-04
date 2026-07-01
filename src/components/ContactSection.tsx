@@ -74,9 +74,8 @@ const ContactSection = () => {
                   <div>
                     <h3 className="text-xl font-semibold text-white mb-2">Horarios</h3>
                     <p className="text-gray-300 leading-relaxed">
-                      Lunes a Viernes: 9:00 - 20:00<br />
-                      Sábados: 9:00 - 19:00<br />
-                      Domingos: 11:00 - 20:00
+                      Lunes a Sábado: 10:00 - 20:30<br />
+                      Domingos: Cerrado
                     </p>
                   </div>
                 </div>
