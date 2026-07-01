@@ -26,12 +26,14 @@ const APPS_SCRIPT_URL = "";
 
 const generateTimeSlots = () => {
   const slots: string[] = [];
-  for (let h = 11; h <= 19; h++) {
+  for (let h = 10; h <= 20; h++) {
     for (let m = 0; m < 60; m += 20) {
-      slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+      const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      // Stop once we pass 20:30
+      if (h === 20 && m > 30) break;
+      slots.push(time);
     }
   }
-  slots.push("20:00");
   return slots;
 };
 
@@ -40,6 +42,10 @@ const ALL_SLOTS = generateTimeSlots();
 const getTodayDate = () => {
   const d = new Date();
   return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+};
+
+const isSunday = () => {
+  return new Date().getDay() === 0;
 };
 
 const ReservationsSection = () => {
@@ -128,12 +134,14 @@ const ReservationsSection = () => {
     setHours({});
   };
 
+  const closed = isSunday();
+
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-            Tabla de Reservas
+            Tabla de Reservas - Horario Verano
           </h2>
           <button
             onClick={handleClearClientData}
@@ -167,7 +175,7 @@ const ReservationsSection = () => {
                 <TableRow key={i}>
                   <TableCell className="p-1">
                     <span className="px-3 py-2 block text-foreground text-sm">
-                      {getTodayDate()}
+                      {closed ? `${getTodayDate()} - CERRADO` : getTodayDate()}
                     </span>
                   </TableCell>
                   {COLUMNS.map((col) => {
@@ -183,6 +191,7 @@ const ReservationsSection = () => {
                           <Input
                             className="border-0 bg-transparent focus-visible:ring-1"
                             value={drafts[key] || ""}
+                            disabled={closed}
                             onChange={(e) =>
                               setDrafts((prev) => ({ ...prev, [key]: e.target.value }))
                             }
@@ -196,6 +205,10 @@ const ReservationsSection = () => {
                     {hours[i] ? (
                       <span className="px-3 py-2 block text-foreground text-sm font-medium">
                         {hours[i]}
+                      </span>
+                    ) : closed ? (
+                      <span className="px-3 py-2 block text-destructive text-sm font-medium">
+                        CERRADO
                       </span>
                     ) : (
                       <Select onValueChange={(val) => handleHourSelect(i, val)}>
@@ -215,7 +228,7 @@ const ReservationsSection = () => {
                   <TableCell className="p-1">
                     <button
                       onClick={() => handleAddCita(i)}
-                      disabled={!isRowComplete(i)}
+                      disabled={closed || !isRowComplete(i)}
                       className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       Añadir Cita
