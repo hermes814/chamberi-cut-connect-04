@@ -134,12 +134,14 @@ const ReservationsSection = () => {
     setHours({});
   };
 
+  const closed = isSunday();
+
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-            Tabla de Reservas
+            Tabla de Reservas - Horario Verano
           </h2>
           <button
             onClick={handleClearClientData}
@@ -173,7 +175,7 @@ const ReservationsSection = () => {
                 <TableRow key={i}>
                   <TableCell className="p-1">
                     <span className="px-3 py-2 block text-foreground text-sm">
-                      {getTodayDate()}
+                      {closed ? `${getTodayDate()} - CERRADO` : getTodayDate()}
                     </span>
                   </TableCell>
                   {COLUMNS.map((col) => {
@@ -189,6 +191,7 @@ const ReservationsSection = () => {
                           <Input
                             className="border-0 bg-transparent focus-visible:ring-1"
                             value={drafts[key] || ""}
+                            disabled={closed}
                             onChange={(e) =>
                               setDrafts((prev) => ({ ...prev, [key]: e.target.value }))
                             }
@@ -202,6 +205,10 @@ const ReservationsSection = () => {
                     {hours[i] ? (
                       <span className="px-3 py-2 block text-foreground text-sm font-medium">
                         {hours[i]}
+                      </span>
+                    ) : closed ? (
+                      <span className="px-3 py-2 block text-destructive text-sm font-medium">
+                        CERRADO
                       </span>
                     ) : (
                       <Select onValueChange={(val) => handleHourSelect(i, val)}>
@@ -221,7 +228,7 @@ const ReservationsSection = () => {
                   <TableCell className="p-1">
                     <button
                       onClick={() => handleAddCita(i)}
-                      disabled={!isRowComplete(i)}
+                      disabled={closed || !isRowComplete(i)}
                       className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       Añadir Cita
