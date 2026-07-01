@@ -26,12 +26,14 @@ const APPS_SCRIPT_URL = "";
 
 const generateTimeSlots = () => {
   const slots: string[] = [];
-  for (let h = 11; h <= 19; h++) {
+  for (let h = 10; h <= 20; h++) {
     for (let m = 0; m < 60; m += 20) {
-      slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+      const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      // Stop once we pass 20:30
+      if (h === 20 && m > 30) break;
+      slots.push(time);
     }
   }
-  slots.push("20:00");
   return slots;
 };
 
@@ -40,6 +42,10 @@ const ALL_SLOTS = generateTimeSlots();
 const getTodayDate = () => {
   const d = new Date();
   return d.toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+};
+
+const isSunday = () => {
+  return new Date().getDay() === 0;
 };
 
 const ReservationsSection = () => {
