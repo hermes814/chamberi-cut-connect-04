@@ -172,7 +172,7 @@ const ReservationsSection = () => {
             </TableHeader>
             <TableBody>
               {Array.from({ length: ROWS }, (_, i) => (
-                <TableRow key={i}>
+                <TableRow key={i} className={hours[i] ? "bg-primary/5" : undefined}>
                   <TableCell className="p-1">
                     <span className="px-3 py-2 block text-foreground text-sm">
                       {closed ? `${getTodayDate()} - CERRADO` : getTodayDate()}
@@ -203,9 +203,12 @@ const ReservationsSection = () => {
                   })}
                   <TableCell className="p-1">
                     {hours[i] ? (
-                      <span className="px-3 py-2 block text-foreground text-sm font-medium">
-                        {hours[i]}
-                      </span>
+                      <div className="px-3 py-2 flex items-center gap-2">
+                        <span className="text-foreground text-sm font-medium">{hours[i]}</span>
+                        <span className="inline-flex items-center rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive">
+                          Reservada
+                        </span>
+                      </div>
                     ) : closed ? (
                       <span className="px-3 py-2 block text-destructive text-sm font-medium">
                         CERRADO
