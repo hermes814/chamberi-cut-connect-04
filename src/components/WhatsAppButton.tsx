@@ -97,14 +97,15 @@ const WhatsAppButton = () => {
               </div>
             ))}
             {loading && <p className="text-sm text-muted-foreground">Faruthel está escribiendo…</p>}
-            {reserva && (
+            {waUrl && (
               <button
-                onClick={confirmWhatsApp}
+                onClick={() => window.open(waUrl, "_blank")}
                 className="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
               >
-                Confirmar por WhatsApp
+                Reenviar aviso por WhatsApp
               </button>
             )}
+
             <div ref={endRef} />
           </div>
 
