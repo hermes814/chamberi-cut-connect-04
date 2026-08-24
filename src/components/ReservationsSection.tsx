@@ -75,9 +75,20 @@ const ReservationsSection = () => {
     localStorage.setItem(HOURS_KEY, JSON.stringify(hours));
   }, [hours]);
 
+  const [dbHours, setDbHours] = useState<string[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const hoy = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
+      const { data } = await supabase.from("citas").select("hora").eq("fecha", hoy);
+      if (data) setDbHours(data.map((c) => c.hora));
+    };
+    load();
+  }, []);
+
   const reservedSlots = useMemo(() => {
-    return new Set(Object.values(hours));
-  }, [hours]);
+    return new Set([...Object.values(hours), ...dbHours]);
+  }, [hours, dbHours]);
 
   const availableSlots = useMemo(() => {
     return ALL_SLOTS.filter((s) => !reservedSlots.has(s));
