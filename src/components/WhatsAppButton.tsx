@@ -4,7 +4,7 @@ import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 
-const PHONE = "34603912086";
+
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chatbot-reserva`;
 
 type Msg = { role: "user" | "assistant"; content: string };
