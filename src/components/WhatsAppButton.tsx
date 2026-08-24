@@ -9,13 +9,11 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chatbot-rese
 
 type Msg = { role: "user" | "assistant"; content: string };
 
-const RESERVA_RE = /\[RESERVA\]([\s\S]*?)\[\/RESERVA\]/;
-
 const WhatsAppButton = () => {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [reserva, setReserva] = useState<Record<string, string> | null>(null);
+  const [waUrl, setWaUrl] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
@@ -48,16 +46,16 @@ const WhatsAppButton = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
 
-      const raw: string = data.reply || "";
-      const match = raw.match(RESERVA_RE);
-      if (match) {
-        try {
-          setReserva(JSON.parse(match[1]));
-        } catch {
-          /* ignore */
-        }
+      setMessages([...next, { role: "assistant", content: data.reply || "" }]);
+
+      if (data.whatsappUrl) {
+        setWaUrl(data.whatsappUrl);
+        window.open(data.whatsappUrl, "_blank");
+        toast({
+          title: "Cita registrada",
+          description: "Se envió la notificación por WhatsApp y la hora ya no está disponible.",
+        });
       }
-      setMessages([...next, { role: "assistant", content: raw.replace(RESERVA_RE, "").trim() }]);
     } catch (e) {
       toast({
         title: "Error",
@@ -69,11 +67,6 @@ const WhatsAppButton = () => {
     }
   };
 
-  const confirmWhatsApp = () => {
-    if (!reserva) return;
-    const msg = `Hola! Quiero confirmar mi cita en Chamberi Barber Shop:\n\n• Nombre: ${reserva.nombre}\n• Servicio: ${reserva.servicio}\n• Barbero: ${reserva.barbero}\n• Día y hora: ${reserva.fecha_hora}\n• Teléfono: ${reserva.telefono}`;
-    window.open(`https://wa.me/${PHONE}?text=${encodeURIComponent(msg)}`, "_blank");
-  };
 
   return (
     <>
