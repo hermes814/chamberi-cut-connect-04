@@ -28,7 +28,7 @@ ${ocupadas}
 
 DEBES RECOPILAR estos 5 datos, uno o dos por mensaje, sin abrumar:
 1. Nombre del cliente
-2. Tipo de servicio (Corte 15€, Corte + Perilla 18€, Corte + Barba 20€, Corte + Barba + Cejas 23€, Corte niño 12€, Cejas 3€, Barba 10€)
+2. Tipo de servicio (Corte 15€, Corte + Perilla 18€, Corte + Barba 20€, Corte + Barba (incluye cejas, mascarilla y lavado) 23€, Corte niño 12€, Cejas 3€, Barba 10€)
 3. Barbero: Jorge, Axel u Oscar (ofrece siempre las 3 opciones)
 4. Día y hora deseados (valida contra el horario del barbero elegido, el horario del local y las horas ya reservadas)
 5. Número de teléfono de contacto
@@ -40,14 +40,31 @@ REGLAS:
 - Al proponer horas, indica también qué horas de ese día ya están ocupadas con ese barbero para que no las pida.
 - Nunca aceptes domingos, horas fuera del turno del barbero ni horas ya reservadas.
 - No uses la palabra "sucesivamente" en ninguna respuesta.
-- Si el cliente pide algo fuera de reservas, redirige amablemente.
+- Si el cliente pide algo fuera de reservas o cancelaciones, redirige amablemente.
 - Cuando tengas LOS 5 DATOS COMPLETOS, responde con un resumen corto y AL FINAL del mensaje añade exactamente este bloque JSON (sin markdown, sin comillas extra), con la fecha en formato YYYY-MM-DD y la hora en formato HH:MM:
 
 [RESERVA]{"nombre":"...","servicio":"...","barbero":"...","fecha":"YYYY-MM-DD","hora":"HH:MM","telefono":"..."}[/RESERVA]
 
-Nunca incluyas el bloque [RESERVA] hasta tener los 5 datos confirmados.`;
+Nunca incluyas el bloque [RESERVA] hasta tener los 5 datos confirmados.
+
+CANCELACIONES:
+- Si el cliente quiere anular o cancelar su cita, pídele su número de teléfono y el día y la hora de la cita.
+- Explícale que solo se puede cancelar hasta 30 minutos antes de la hora de la cita; pasado ese margen debe llamar al 603 912 086.
+- Cuando tengas teléfono, fecha y hora, añade AL FINAL del mensaje exactamente este bloque (sin markdown):
+
+[CANCELAR]{"telefono":"...","fecha":"YYYY-MM-DD","hora":"HH:MM"}[/CANCELAR]
+
+Nunca incluyas el bloque [CANCELAR] sin esos 3 datos.`;
 
 const RESERVA_RE = /\[RESERVA\]([\s\S]*?)\[\/RESERVA\]/;
+const CANCELAR_RE = /\[CANCELAR\]([\s\S]*?)\[\/CANCELAR\]/;
+
+// Minutos absolutos (día + hora) para comparar sin problemas de zona horaria
+const toMinutes = (fecha: string, hora: string) => {
+  const [y, m, d] = fecha.split("-").map(Number);
+  const [hh, mm] = hora.split(":").map(Number);
+  return Date.UTC(y, m - 1, d) / 60000 + hh * 60 + mm;
+};
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
@@ -123,6 +140,7 @@ Deno.serve(async (req) => {
 
     // Si el asistente cerró la reserva, la registramos en la base de datos
     let reserva: Record<string, string> | null = null;
+    let cancelacion: Record<string, string> | null = null;
     let whatsappUrl: string | null = null;
     const match = reply.match(RESERVA_RE);
 
@@ -162,7 +180,54 @@ Deno.serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ reply, reserva, whatsappUrl }), {
+    // Cancelación de cita (máximo 30 minutos antes de la hora reservada)
+    const cancelMatch = reply.match(CANCELAR_RE);
+    if (cancelMatch) {
+      reply = reply.replace(CANCELAR_RE, "").trim();
+      try {
+        const c = JSON.parse(cancelMatch[1]);
+        const ahora = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Madrid" });
+        const [fechaHoy, horaHoy] = ahora.split(" ");
+        const minutosAhora = toMinutes(fechaHoy, horaHoy.slice(0, 5));
+        const minutosCita = toMinutes(c.fecha, c.hora);
+
+        const { data: citaEncontrada } = await supabase
+          .from("citas")
+          .select("id, nombre, barbero, servicio")
+          .eq("telefono", c.telefono)
+          .eq("fecha", c.fecha)
+          .eq("hora", c.hora)
+          .maybeSingle();
+
+        if (!citaEncontrada) {
+          reply += `\n\nNo encuentro ninguna cita con esos datos (${c.fecha} a las ${c.hora}). ¿Puedes revisar el teléfono, el día y la hora?`;
+        } else if (minutosCita - minutosAhora < 30) {
+          reply += `\n\nLo siento, ya no quedan 30 minutos para tu cita (${c.fecha} a las ${c.hora}), así que no puedo cancelarla desde aquí. Llama al 603 912 086.`;
+        } else {
+          const { error: delError } = await supabase.from("citas").delete().eq("id", citaEncontrada.id);
+          if (delError) {
+            console.error("Error cancelando cita:", delError.message);
+            reply += "\n\nHubo un problema al cancelar la cita. Inténtalo de nuevo en un momento.";
+          } else {
+            const msg =
+              `CITA CANCELADA - Chamberi Barber Shop\n\n` +
+              `• Nombre: ${citaEncontrada.nombre}\n` +
+              `• Servicio: ${citaEncontrada.servicio}\n` +
+              `• Barbero: ${citaEncontrada.barbero}\n` +
+              `• Fecha: ${c.fecha}\n` +
+              `• Hora: ${c.hora}\n` +
+              `• Teléfono: ${c.telefono}`;
+            whatsappUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+            cancelacion = { ...c, nombre: citaEncontrada.nombre, barbero: citaEncontrada.barbero };
+            reply += `\n\nListo, tu cita del ${c.fecha} a las ${c.hora} con ${citaEncontrada.barbero} ha sido cancelada y esa hora vuelve a estar disponible.`;
+          }
+        }
+      } catch (err) {
+        console.error("Cancelación inválida:", err);
+      }
+    }
+
+    return new Response(JSON.stringify({ reply, reserva, cancelacion, whatsappUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
