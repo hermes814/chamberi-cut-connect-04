@@ -52,7 +52,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      horas_ocupadas: {
+        Args: { _fecha: string }
+        Returns: {
+          barbero: string
+          hora: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
