@@ -81,8 +81,8 @@ const ReservationsSection = () => {
   useEffect(() => {
     const load = async () => {
       const hoy = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
-      const { data } = await supabase.from("citas").select("hora").eq("fecha", hoy);
-      if (data) setDbHours(data.map((c) => c.hora));
+      const { data } = await supabase.rpc("horas_ocupadas", { _fecha: hoy });
+      if (data) setDbHours(data.map((c: { hora: string }) => c.hora));
     };
     load();
   }, []);
