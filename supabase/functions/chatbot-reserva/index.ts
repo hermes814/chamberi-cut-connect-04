@@ -179,7 +179,54 @@ Deno.serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ reply, reserva, whatsappUrl }), {
+    // Cancelación de cita (máximo 30 minutos antes de la hora reservada)
+    const cancelMatch = reply.match(CANCELAR_RE);
+    if (cancelMatch) {
+      reply = reply.replace(CANCELAR_RE, "").trim();
+      try {
+        const c = JSON.parse(cancelMatch[1]);
+        const ahora = new Date().toLocaleString("sv-SE", { timeZone: "Europe/Madrid" });
+        const [fechaHoy, horaHoy] = ahora.split(" ");
+        const minutosAhora = toMinutes(fechaHoy, horaHoy.slice(0, 5));
+        const minutosCita = toMinutes(c.fecha, c.hora);
+
+        const { data: citaEncontrada } = await supabase
+          .from("citas")
+          .select("id, nombre, barbero, servicio")
+          .eq("telefono", c.telefono)
+          .eq("fecha", c.fecha)
+          .eq("hora", c.hora)
+          .maybeSingle();
+
+        if (!citaEncontrada) {
+          reply += `\n\nNo encuentro ninguna cita con esos datos (${c.fecha} a las ${c.hora}). ¿Puedes revisar el teléfono, el día y la hora?`;
+        } else if (minutosCita - minutosAhora < 30) {
+          reply += `\n\nLo siento, ya no quedan 30 minutos para tu cita (${c.fecha} a las ${c.hora}), así que no puedo cancelarla desde aquí. Llama al 603 912 086.`;
+        } else {
+          const { error: delError } = await supabase.from("citas").delete().eq("id", citaEncontrada.id);
+          if (delError) {
+            console.error("Error cancelando cita:", delError.message);
+            reply += "\n\nHubo un problema al cancelar la cita. Inténtalo de nuevo en un momento.";
+          } else {
+            const msg =
+              `CITA CANCELADA - Chamberi Barber Shop\n\n` +
+              `• Nombre: ${citaEncontrada.nombre}\n` +
+              `• Servicio: ${citaEncontrada.servicio}\n` +
+              `• Barbero: ${citaEncontrada.barbero}\n` +
+              `• Fecha: ${c.fecha}\n` +
+              `• Hora: ${c.hora}\n` +
+              `• Teléfono: ${c.telefono}`;
+            whatsappUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+            cancelacion = { ...c, nombre: citaEncontrada.nombre, barbero: citaEncontrada.barbero };
+            reply += `\n\nListo, tu cita del ${c.fecha} a las ${c.hora} con ${citaEncontrada.barbero} ha sido cancelada y esa hora vuelve a estar disponible.`;
+          }
+        }
+      } catch (err) {
+        console.error("Cancelación inválida:", err);
+      }
+    }
+
+    return new Response(JSON.stringify({ reply, reserva, cancelacion, whatsappUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
