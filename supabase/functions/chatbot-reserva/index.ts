@@ -28,7 +28,7 @@ ${ocupadas}
 
 DEBES RECOPILAR estos 5 datos, uno o dos por mensaje, sin abrumar:
 1. Nombre del cliente
-2. Tipo de servicio (Corte 15€, Corte + Perilla 18€, Corte + Barba 20€, Corte + Barba + Cejas 23€, Corte niño 12€, Cejas 3€, Barba 10€)
+2. Tipo de servicio (Corte 15€, Corte + Perilla 18€, Corte + Barba 20€, Corte + Barba (incluye cejas, mascarilla y lavado) 23€, Corte niño 12€, Cejas 3€, Barba 10€)
 3. Barbero: Jorge, Axel u Oscar (ofrece siempre las 3 opciones)
 4. Día y hora deseados (valida contra el horario del barbero elegido, el horario del local y las horas ya reservadas)
 5. Número de teléfono de contacto
@@ -40,14 +40,31 @@ REGLAS:
 - Al proponer horas, indica también qué horas de ese día ya están ocupadas con ese barbero para que no las pida.
 - Nunca aceptes domingos, horas fuera del turno del barbero ni horas ya reservadas.
 - No uses la palabra "sucesivamente" en ninguna respuesta.
-- Si el cliente pide algo fuera de reservas, redirige amablemente.
+- Si el cliente pide algo fuera de reservas o cancelaciones, redirige amablemente.
 - Cuando tengas LOS 5 DATOS COMPLETOS, responde con un resumen corto y AL FINAL del mensaje añade exactamente este bloque JSON (sin markdown, sin comillas extra), con la fecha en formato YYYY-MM-DD y la hora en formato HH:MM:
 
 [RESERVA]{"nombre":"...","servicio":"...","barbero":"...","fecha":"YYYY-MM-DD","hora":"HH:MM","telefono":"..."}[/RESERVA]
 
-Nunca incluyas el bloque [RESERVA] hasta tener los 5 datos confirmados.`;
+Nunca incluyas el bloque [RESERVA] hasta tener los 5 datos confirmados.
+
+CANCELACIONES:
+- Si el cliente quiere anular o cancelar su cita, pídele su número de teléfono y el día y la hora de la cita.
+- Explícale que solo se puede cancelar hasta 30 minutos antes de la hora de la cita; pasado ese margen debe llamar al 603 912 086.
+- Cuando tengas teléfono, fecha y hora, añade AL FINAL del mensaje exactamente este bloque (sin markdown):
+
+[CANCELAR]{"telefono":"...","fecha":"YYYY-MM-DD","hora":"HH:MM"}[/CANCELAR]
+
+Nunca incluyas el bloque [CANCELAR] sin esos 3 datos.`;
 
 const RESERVA_RE = /\[RESERVA\]([\s\S]*?)\[\/RESERVA\]/;
+const CANCELAR_RE = /\[CANCELAR\]([\s\S]*?)\[\/CANCELAR\]/;
+
+// Minutos absolutos (día + hora) para comparar sin problemas de zona horaria
+const toMinutes = (fecha: string, hora: string) => {
+  const [y, m, d] = fecha.split("-").map(Number);
+  const [hh, mm] = hora.split(":").map(Number);
+  return Date.UTC(y, m - 1, d) / 60000 + hh * 60 + mm;
+};
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL") ?? "",
