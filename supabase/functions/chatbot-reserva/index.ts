@@ -140,6 +140,7 @@ Deno.serve(async (req) => {
 
     // Si el asistente cerró la reserva, la registramos en la base de datos
     let reserva: Record<string, string> | null = null;
+    let cancelacion: Record<string, string> | null = null;
     let whatsappUrl: string | null = null;
     const match = reply.match(RESERVA_RE);
 
