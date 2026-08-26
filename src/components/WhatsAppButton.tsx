@@ -18,7 +18,7 @@ const WhatsAppButton = () => {
     {
       role: "assistant",
       content:
-        "¡Hola! Soy Faruthel, el asistente de Chamberi Barber Shop. Te ayudo a reservar tu cita. ¿Cómo te llamas?",
+        "¡Hola! Soy Faruthel, el asistente de Chamberi Barber Shop. Puedo reservar tu cita o cancelar una ya hecha (hasta 30 minutos antes). ¿Qué necesitas?",
     },
   ]);
   const endRef = useRef<HTMLDivElement>(null);
