@@ -124,27 +124,23 @@ const ReservationsSection = () => {
     () =>
       Object.keys(hours)
         .filter((row) => hours[row])
-        .map((row) => ({ barbero: barbers[row] || "", hora: hours[row] })),
+        .map((row) => ({ row, barbero: barbers[row] || "", hora: hours[row] })),
     [hours, barbers]
   );
-
-  const allBooked = useMemo(() => [...localBooked, ...dbBooked], [localBooked, dbBooked]);
 
   const slotsForBarber = useCallback(
     (barbero: string, currentRow: number) => {
       const taken = new Set(
-        allBooked
-          .filter((b, idx) => {
-            // no bloquear la propia selección de esta fila
-            const isOwnRow = idx < localBooked.length && String(currentRow) === Object.keys(hours).filter((r) => hours[r])[idx];
-            if (isOwnRow) return false;
-            return !barbero || !b.barbero || b.barbero === barbero;
-          })
+        [
+          ...localBooked.filter((b) => b.row !== String(currentRow)),
+          ...dbBooked.map((b) => ({ row: "", ...b })),
+        ]
+          .filter((b) => !barbero || !b.barbero || b.barbero === barbero)
           .map((b) => b.hora)
       );
       return ALL_SLOTS.filter((s) => !taken.has(s));
     },
-    [allBooked, localBooked, hours]
+    [localBooked, dbBooked]
   );
 
   const handleBlur = (key: string) => {
