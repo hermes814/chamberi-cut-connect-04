@@ -20,7 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const ROWS = 30;
 const COLUMNS = ["NOMBRE DEL CLIENTE", "TIPO DE SERVICIO", "NÚMERO DE CONTACTO"];
-const BARBEROS = ["Jorge", "Axel", "Oscar"];
+const BARBEROS = ["Jorge", "Oscar"];
 const STORAGE_KEY = "reservations_locked";
 const HOURS_KEY = "reservations_hours";
 const BARBERS_KEY = "reservations_barbers";
