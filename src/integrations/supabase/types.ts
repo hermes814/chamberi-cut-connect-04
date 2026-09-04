@@ -49,7 +49,24 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      disponibilidad: {
+        Row: {
+          barbero: string | null
+          fecha: string | null
+          hora: string | null
+        }
+        Insert: {
+          barbero?: string | null
+          fecha?: string | null
+          hora?: string | null
+        }
+        Update: {
+          barbero?: string | null
+          fecha?: string | null
+          hora?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
