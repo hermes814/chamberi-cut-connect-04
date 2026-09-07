@@ -10,7 +10,7 @@ import {
 const PricingSection = () => {
   const mainServices = [
     { name: "CORTE + BARBA (INCLUYE CEJAS, MASCARILLA Y LAVADO)", price: "23 €" },
-    { name: "CORTE + BARBA (INCLUYE MASCARILLA Y LAVADO)", price: "20 €" },
+    
     { name: "CORTE + PERILLA (INCLUYE MASCARILLA, CEJAS Y LAVADO)", price: "18 €" },
     { name: "CORTE (INCLUYE MASCARILLA Y CEJAS)", price: "15 €" },
     { name: "CORTE PARA NIÑOS", price: "12 €" },
