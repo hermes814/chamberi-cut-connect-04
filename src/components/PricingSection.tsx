@@ -12,13 +12,13 @@ const PricingSection = () => {
     { name: "CORTE + BARBA (INCLUYE CEJAS, MASCARILLA Y LAVADO)", price: "23 €" },
     
     { name: "CORTE + PERILLA (INCLUYE MASCARILLA, CEJAS Y LAVADO)", price: "18 €" },
-    { name: "CORTE (INCLUYE MASCARILLA Y CEJAS)", price: "15 €" },
+    { name: "CORTE CABALLERO (INCLUYE MASCARILLA Y CEJAS)", price: "15 €" },
     { name: "CORTE PARA NIÑOS", price: "12 €" },
+    { name: "BARBA (INCLUYE MASCARILLA Y CEJAS)", price: "10 €" },
   ];
 
   const extraServices = [
     { name: "CEJAS", price: "3 €" },
-    { name: "BARBA", price: "10 €" },
   ];
 
   return (
