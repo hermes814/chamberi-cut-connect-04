@@ -28,9 +28,26 @@ const services = [
 ];
 
 const ServicesSection = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    const tryPlay = () => video.play().catch(() => {});
+    tryPlay();
+    document.addEventListener("touchstart", tryPlay, { once: true });
+    document.addEventListener("click", tryPlay, { once: true });
+    return () => {
+      document.removeEventListener("touchstart", tryPlay);
+      document.removeEventListener("click", tryPlay);
+    };
+  }, []);
+
   return (
     <section className="relative py-20 px-4 overflow-hidden">
       <video
+        ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src={servicesVideo.url}
         poster={servicesBg.url}
@@ -38,8 +55,10 @@ const ServicesSection = () => {
         loop
         muted
         playsInline
+        preload="auto"
       />
-      <div className="absolute inset-0 bg-black/75" />
+      <div className="absolute inset-0 bg-black/50" />
+
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
