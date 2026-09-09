@@ -13,7 +13,7 @@ const WhatsAppButton = () => {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [waUrl, setWaUrl] = useState<string | null>(null);
+  
   const [messages, setMessages] = useState<Msg[]>([
     {
       role: "assistant",
@@ -114,14 +114,6 @@ const WhatsAppButton = () => {
               </div>
             ))}
             {loading && <p className="text-sm text-muted-foreground">Faruthel está escribiendo…</p>}
-            {waUrl && (
-              <button
-                onClick={() => window.open(waUrl, "_blank")}
-                className="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
-              >
-                Reenviar aviso por WhatsApp
-              </button>
-            )}
 
             <div ref={endRef} />
           </div>
