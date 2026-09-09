@@ -1,9 +1,6 @@
-import { useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Scissors, UserCheck, Sparkles, Users } from "lucide-react";
-import servicesBg from "@/assets/services-bg-photo.jpg.asset.json";
-import servicesVideo from "@/assets/services-bg.mp4.asset.json";
-
+import barberServices from "@/assets/barber-services.jpg.asset.json";
 
 const services = [
   {
@@ -29,37 +26,15 @@ const services = [
 ];
 
 const ServicesSection = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = true;
-    const tryPlay = () => video.play().catch(() => {});
-    tryPlay();
-    document.addEventListener("touchstart", tryPlay, { once: true });
-    document.addEventListener("click", tryPlay, { once: true });
-    return () => {
-      document.removeEventListener("touchstart", tryPlay);
-      document.removeEventListener("click", tryPlay);
-    };
-  }, []);
-
   return (
     <section className="relative py-20 px-4 overflow-hidden">
-      <video
-        ref={videoRef}
+      <img
         className="absolute inset-0 w-full h-full object-cover"
-        src={servicesVideo.url}
-        poster={servicesBg.url}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
+        src={barberServices.url}
+        alt="Barberos trabajando en Chamberi Barber Shop"
+        loading="lazy"
       />
       <div className="absolute inset-0 bg-black/50" />
-
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
