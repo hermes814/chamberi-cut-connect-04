@@ -46,15 +46,32 @@ const WhatsAppButton = () => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error");
 
-      setMessages([...next, { role: "assistant", content: data.reply || "" }]);
+      const reply = data.reply || "";
 
       if (data.whatsappUrl) {
-        setWaUrl(data.whatsappUrl);
-        window.open(data.whatsappUrl, "_blank");
+        setMessages([
+          ...next,
+          {
+            role: "assistant",
+            content:
+              `${reply}\n\nAviso enviado al 603 912 086. ¡Gracias por confiar en Chamberi Barber Shop! Hasta pronto.`.trim(),
+          },
+        ]);
         toast({
           title: "Cita registrada",
-          description: "Se envió la notificación por WhatsApp y la hora ya no está disponible.",
+          description: "Se envió el aviso al 603 912 086 y la hora ya no está disponible.",
         });
+        setTimeout(() => {
+          setOpen(false);
+          setMessages([
+            {
+              role: "assistant",
+              content: "¡Hola! Soy Faruthel. ¿Reservo o cancelo tu cita?",
+            },
+          ]);
+        }, 4000);
+      } else {
+        setMessages([...next, { role: "assistant", content: reply }]);
       }
     } catch (e) {
       toast({
