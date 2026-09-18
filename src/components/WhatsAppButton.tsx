@@ -1,16 +1,18 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, X } from "lucide-react";
+import { Send, X, Phone, MessageCircle } from "lucide-react";
 import whatsappLogo from "@/assets/whatsapp-logo.png";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chatbot-reserva`;
+const PHONE_TEL = "tel:+34603912086";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const WhatsAppButton = () => {
   const [open, setOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   
