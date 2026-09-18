@@ -144,9 +144,47 @@ const WhatsAppButton = () => {
         </div>
       )}
 
+      {menuOpen && !open && (
+        <div className="fixed bottom-24 right-6 z-50 flex flex-col gap-3">
+          <a
+            href={PHONE_TEL}
+            aria-label="Llamar para reservar"
+            className="group flex items-center gap-3 rounded-full bg-card px-4 py-3 shadow-card transition-all duration-300 hover:scale-105"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Phone className="h-5 w-5" />
+            </span>
+            <span className="text-sm font-semibold text-foreground">
+              Llamar al 603 912 086
+            </span>
+          </a>
+          <button
+            onClick={() => {
+              setMenuOpen(false);
+              setOpen(true);
+            }}
+            aria-label="Chat con Faruthel"
+            className="group flex items-center gap-3 rounded-full bg-card px-4 py-3 shadow-card transition-all duration-300 hover:scale-105"
+          >
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <MessageCircle className="h-5 w-5" />
+            </span>
+            <span className="text-sm font-semibold text-foreground">
+              Chat con Faruthel
+            </span>
+          </button>
+        </div>
+      )}
+
       <button
-        onClick={() => setOpen((v) => !v)}
-        aria-label="Reservar con Faruthel por WhatsApp"
+        onClick={() => {
+          if (open) {
+            setOpen(false);
+            return;
+          }
+          setMenuOpen((v) => !v);
+        }}
+        aria-label="Opciones de reserva"
         className="group fixed bottom-6 right-6 z-50 cursor-pointer transition-all duration-300 hover:scale-110"
       >
         <img
