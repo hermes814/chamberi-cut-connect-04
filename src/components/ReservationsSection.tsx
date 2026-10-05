@@ -25,19 +25,18 @@ const STORAGE_KEY = "reservations_locked";
 const HOURS_KEY = "reservations_hours";
 const BARBERS_KEY = "reservations_barbers";
 
-const generateTimeSlots = () => {
+const generateTimeSlots = (startMinutes: number, endMinutes: number) => {
   const slots: string[] = [];
-  for (let h = 10; h <= 20; h++) {
-    for (let m = 0; m < 60; m += 30) {
-      const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-      if (h === 20 && m > 30) break;
-      slots.push(time);
-    }
+  for (let minutes = startMinutes; minutes <= endMinutes; minutes += 30) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    slots.push(`${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`);
   }
   return slots;
 };
 
-const ALL_SLOTS = generateTimeSlots();
+const WEEKDAY_SLOTS = generateTimeSlots(10 * 60, 20 * 60 + 30);
+const SUNDAY_SLOTS = generateTimeSlots(10 * 60 + 30, 20 * 60);
 
 const getTodayDate = () => {
   const d = new Date();
@@ -47,7 +46,10 @@ const getTodayDate = () => {
 const getTodayISO = () =>
   new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
 
-const isSunday = () => new Date().getDay() === 0;
+const isSundayInMadrid = () =>
+  new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Madrid", weekday: "short" }).format(
+    new Date()
+  ) === "Sun";
 
 const ReservationsSection = () => {
   const [locked, setLocked] = useState<Record<string, string>>(() => {
@@ -138,7 +140,8 @@ const ReservationsSection = () => {
           .filter((b) => !barbero || !b.barbero || b.barbero === barbero)
           .map((b) => b.hora)
       );
-      return ALL_SLOTS.filter((s) => !taken.has(s));
+      const availableSlots = isSundayInMadrid() ? SUNDAY_SLOTS : WEEKDAY_SLOTS;
+      return availableSlots.filter((s) => !taken.has(s));
     },
     [localBooked, dbBooked]
   );
@@ -214,14 +217,12 @@ const ReservationsSection = () => {
     setBarbers({});
   };
 
-  const closed = isSunday();
-
   return (
     <section className="py-20 px-4 bg-background">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-foreground">
-            Tabla de Reservas - Horario Verano
+            Tabla de Reservas - Horario Invierno
           </h2>
           <button
             onClick={handleClearClientData}
@@ -258,7 +259,7 @@ const ReservationsSection = () => {
                 <TableRow key={i} className={hours[i] ? "bg-primary/5" : undefined}>
                   <TableCell className="p-1">
                     <span className="px-3 py-2 block text-foreground text-sm">
-                      {closed ? `${getTodayDate()} - CERRADO` : getTodayDate()}
+                       {getTodayDate()}
                     </span>
                   </TableCell>
                   {COLUMNS.map((col) => {
@@ -274,7 +275,6 @@ const ReservationsSection = () => {
                           <Input
                             className="border-0 bg-transparent focus-visible:ring-1"
                             value={drafts[key] || ""}
-                            disabled={closed}
                             onChange={(e) =>
                               setDrafts((prev) => ({ ...prev, [key]: e.target.value }))
                             }
@@ -285,27 +285,21 @@ const ReservationsSection = () => {
                     );
                   })}
                   <TableCell className="p-1">
-                    {closed ? (
-                      <span className="px-3 py-2 block text-destructive text-sm font-medium">
-                        CERRADO
-                      </span>
-                    ) : (
-                      <Select
-                        value={barbers[i] || undefined}
-                        onValueChange={(val) => handleBarberSelect(i, val)}
-                      >
-                        <SelectTrigger className="border-0 bg-transparent">
-                          <SelectValue placeholder="Seleccionar" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {BARBEROS.map((b) => (
-                            <SelectItem key={b} value={b}>
-                              {b}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                    <Select
+                      value={barbers[i] || undefined}
+                      onValueChange={(val) => handleBarberSelect(i, val)}
+                    >
+                      <SelectTrigger className="border-0 bg-transparent">
+                        <SelectValue placeholder="Seleccionar" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {BARBEROS.map((b) => (
+                          <SelectItem key={b} value={b}>
+                            {b}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </TableCell>
                   <TableCell className="p-1">
                     {hours[i] ? (
@@ -315,10 +309,6 @@ const ReservationsSection = () => {
                           Reservada
                         </span>
                       </div>
-                    ) : closed ? (
-                      <span className="px-3 py-2 block text-destructive text-sm font-medium">
-                        CERRADO
-                      </span>
                     ) : (
                       <Select onValueChange={(val) => handleHourSelect(i, val)}>
                         <SelectTrigger className="border-0 bg-transparent">
@@ -337,7 +327,7 @@ const ReservationsSection = () => {
                   <TableCell className="p-1">
                     <button
                       onClick={() => handleAddCita(i)}
-                      disabled={closed || !isRowComplete(i)}
+                       disabled={!isRowComplete(i)}
                       className="px-3 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                       Añadir Cita
