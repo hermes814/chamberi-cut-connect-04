@@ -8,6 +8,13 @@
       "when": 1791209360741,
       "tag": "0000_permitir_horario_invierno_domingo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791209380870,
+      "tag": "0001_corregir_validacion_horario_invierno",
+      "breakpoints": true
     }
   ]
 }
