@@ -1,10 +1,32 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Scissors, UserCheck, Sparkles, Users } from "lucide-react";
-...
+
+const services = [
+  {
+    icon: Scissors,
+    title: "Corte de Cabello",
+    description: "Cortes clásicos y modernos adaptados a tu estilo personal"
+  },
+  {
+    icon: UserCheck,
+    title: "Delineado de Barba",
+    description: "Perfilado y arreglo profesional de barba con técnicas precisas"
+  },
+  {
+    icon: Sparkles,
+    title: "Cortes Clásicos y Modernos",
+    description: "Desde estilos tradicionales hasta las últimas tendencias"
+  },
+  {
+    icon: Users,
+    title: "Asesoramiento de Imagen",
+    description: "Consultoría personalizada para encontrar tu look perfecto"
+  }
+];
+
 const ServicesSection = () => {
   return (
     <section className="relative py-20 px-4 overflow-hidden bg-background">
-
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -14,7 +36,7 @@ const ServicesSection = () => {
             Experiencia profesional con más de 10 años cuidando tu imagen
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <Card key={index} className="bg-gradient-card border-border shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105">
