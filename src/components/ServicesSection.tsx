@@ -1,6 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Scissors, UserCheck, Sparkles, Users } from "lucide-react";
-import barberServices from "@/assets/barber-services.jpg.asset.json";
 
 const services = [
   {
@@ -27,15 +26,7 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section className="relative py-20 px-4 overflow-hidden">
-      <img
-        className="absolute inset-0 w-full h-full object-cover"
-        src={barberServices.url}
-        alt="Barberos trabajando en Chamberi Barber Shop"
-        loading="lazy"
-      />
-      <div className="absolute inset-0 bg-black/50" />
-
+    <section className="relative py-20 px-4 overflow-hidden bg-background">
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -45,7 +36,7 @@ const ServicesSection = () => {
             Experiencia profesional con más de 10 años cuidando tu imagen
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <Card key={index} className="bg-gradient-card border-border shadow-card hover:shadow-glow transition-all duration-300 hover:scale-105">
