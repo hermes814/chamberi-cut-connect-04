@@ -1,40 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Scissors, UserCheck, Sparkles, Users } from "lucide-react";
-import barberServices from "@/assets/barber-services.jpg.asset.json";
-
-const services = [
-  {
-    icon: Scissors,
-    title: "Corte de Cabello",
-    description: "Cortes clásicos y modernos adaptados a tu estilo personal"
-  },
-  {
-    icon: UserCheck,
-    title: "Delineado de Barba",
-    description: "Perfilado y arreglo profesional de barba con técnicas precisas"
-  },
-  {
-    icon: Sparkles,
-    title: "Cortes Clásicos y Modernos",
-    description: "Desde estilos tradicionales hasta las últimas tendencias"
-  },
-  {
-    icon: Users,
-    title: "Asesoramiento de Imagen",
-    description: "Consultoría personalizada para encontrar tu look perfecto"
-  }
-];
-
+...
 const ServicesSection = () => {
   return (
-    <section className="relative py-20 px-4 overflow-hidden">
-      <img
-        className="absolute inset-0 w-full h-full object-cover"
-        src={barberServices.url}
-        alt="Barberos trabajando en Chamberi Barber Shop"
-        loading="lazy"
-      />
-      <div className="absolute inset-0 bg-black/50" />
+    <section className="relative py-20 px-4 overflow-hidden bg-background">
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <div className="text-center mb-16">
