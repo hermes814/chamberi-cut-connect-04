@@ -56,22 +56,14 @@ const WhatsAppButton = () => {
           {
             role: "assistant",
             content:
-              `${reply}\n\nAviso enviado al 603 912 086. ¡Gracias por confiar en Chamberi Barber Shop! Hasta pronto.`.trim(),
+              `${reply}\n\nTu hora ya no está disponible. Se acaba de abrir WhatsApp con tu reserva lista: por favor, pulsa ENVIAR para confirmar tu cita al 603 912 086. ¡Gracias!`.trim(),
           },
         ]);
         toast({
-          title: "Cita registrada",
-          description: "Se envió el aviso al 603 912 086 y la hora ya no está disponible.",
+          title: "Confirma tu cita por WhatsApp",
+          description: "Envía el mensaje que se abrió en WhatsApp para confirmar la reserva.",
         });
-        setTimeout(() => {
-          setOpen(false);
-          setMessages([
-            {
-              role: "assistant",
-              content: "¡Hola! Soy Faruthel. ¿Reservo o cancelo tu cita?",
-            },
-          ]);
-        }, 4000);
+        window.open(data.whatsappUrl, "_blank");
       } else {
         setMessages([...next, { role: "assistant", content: reply }]);
       }
